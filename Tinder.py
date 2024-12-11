@@ -220,47 +220,44 @@ class Tinder:
         return data
     
     def find_matches(self, verbose=False):
-        url = "https://api.gotinder.com/v2/matches/"
-
-        querystring = {"locale": "zh-tw", "count": "60", "message": "1", "is_tinder_u": "false"}
-
-        headers = {
-            'Connection': 'close',
-            'sec-ch-ua': "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"99\", \"Google Chrome\";v=\"99\"",
-            'Support-Short-Video': '1',
-            'App-Session-Time-Elapsed' : '2726',
+        url = "https://api.gotinder.com"
+        header = {
+            
             'X-Auth-Token': self.x_auth_token,
-            'User-Session-Time-Elapsed': '2549',
-            'Sec-Ch-Ua-Platform': "Windows",
-            'X-Supported-Image-Formats': "webp,jpeg",
-            'Persistent-Device-Id' : '79fc234e-920e-4ce9-89c3-80b6f12d070e',
-            'Tinder-Version': '5.27.0',
-            'Sec-Ch-Ua-Mobile': '?0',
-            'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36',
-            'User-Session-Id': 'd6b09029-aaa3-4a86-8ca0-ae55fa7fd313',
-            'Accept': 'application/json',
-            'Platform': 'web',
-            'App-Session-Id': 'e94d2ac5-310f-455f-9b2c-3f526171a93b',
-            'App-Version': '1052700',
-            'Sec-Fetch-Site': 'cross-site',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Priority': 'u=1, i'
+            "Content-Type": "application/json"
         }
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        jsons = response.json()
-        #parsed = json.loads(jsons)
-        #print(type(jsons))
-        #print("The response of upload = ", jsons.get("data").get("matches")[0].get("id"))
-        data = jsons.get("data").get("matches")
+        response = requests.get(
+            f"{url}/v2/matches?count=60",
+            headers=header
+        )
+        response.raise_for_status()
+        
+
+        
+        data = response.json()["data"]["matches"]
         #print(type(data))
         allMessages = {}
         for i in range(len(data)):
-            toID   = str(data[i].get('messages')[0].get('to'))
-            fromID = str(data[i].get('messages')[0].get('from'))
-            message = str(data[i].get('messages')[0].get('message'))
-            matchID = str(data[i].get('messages')[0].get('match_id'))
+            try:
+                toID   = str(data[i].get('messages')[0].get('to'))
+            except Exception as e:
+                print(e)
+                pass
+            try:
+                fromID = str(data[i].get('messages')[0].get('from'))
+            except Exception as e:
+                print(e)
+                pass
+            try:
+                message = str(data[i].get('messages')[0].get('message'))
+            except Exception as e:
+                print(e)
+                pass
+            try:
+                matchID = str(data[i].get('messages')[0].get('match_id'))
+            except Exception as e:
+                print(e)
+                pass
             #allMessages[matchID] = message
             if(matchID.find(fromID) > 3):
                 #print(matchID)
