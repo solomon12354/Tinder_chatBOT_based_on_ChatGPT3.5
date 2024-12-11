@@ -1,17 +1,24 @@
 import time
-from tinderapi import Tinder
+from Tinder import Tinder
 
-
-import openai
 import time
+
+from openai import OpenAI
+
+
 
 AUTH_TOKEN = '' #Your Tinder token here
 chat_TOKEN = '' #Your chatGPT token here
 
+client = OpenAI(
+    # defaults to os.environ.get("OPENAI_API_KEY")
+    api_key=chat_TOKEN,
+)
+
 def chatBOT(api_key = "", message = ""):
     
-    openai.api_key = api_key
-    response = openai.ChatCompletion.create(
+    
+    response = client.chat.completions.create(
       model="gpt-3.5-turbo",
       max_tokens=128,
       temperature=0.5,
